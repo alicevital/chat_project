@@ -1,0 +1,32 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:7.0  
+    container_name: mongo-db
+    restart: always
+    ports:
+      - "27017:27017"  # Expõe porta local (opcional, para acessar via Mongo Compass)
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root  # usuário root
+      MONGO_INITDB_ROOT_PASSWORD: root  # Senha root
+      MONGO_INITDB_DATABASE: db_chat  # Cria o banco inicial
+    volumes:
+      - mongo_data:/data/db  # Persiste dados
+
+  backend:
+    build: .  
+    container_name: fastapi-backend
+    restart: always
+    ports:
+      - "8000:8000"  # Expõe a API
+    environment:
+      MONGO_URI: mongodb://root:root@mongo:27017  # <- URI com auth! 
+    depends_on:
+      - mongo  # Inicia Mongo primeiro
+    volumes:
+      - .:/app  # Monta código para hot-reload (desenvolvimento)
+
+volumes:
+  mongo_data:  # Volume para persistir dados do Mongo

@@ -1,9 +1,8 @@
 from typing import List
-from bson import ObjectId
-
+import re
 from app.repositories.user_repository import UserRepository
 from app.schemas.user_schema import CreateUser, UserSchema
-from app.middlewares.exceptions import BadRequestError, NotFoundError
+from app.middlewares.exceptions import BadRequestError, NotFoundError, UnauthorizedError
 
 
 
@@ -15,6 +14,15 @@ class UserService:
 
 
     def create_user(self, user: CreateUser) -> UserSchema:
+
+        # Verifica se já existe um email desse no db, caso já exista, não continuar codigo
+        if self.repository.get_user_by_email(user.email):
+            raise UnauthorizedError("Usuário já existente")
+        
+        
+        # Verifica se há o padrão certo do email
+        if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', user.email):
+            raise BadRequestError("E mail inválido")
 
         try:
             user_created = self.repository.create_user(user)
@@ -39,6 +47,9 @@ class UserService:
 
             users = self.repository.get_all_users()
 
+            if not users:
+                return BadRequestError("Não Há Usuários")
+            
             for doc in users:
 
                 return [

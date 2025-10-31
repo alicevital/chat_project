@@ -24,6 +24,7 @@ class UserService:
             
             return UserSchema(
                 name=user_created["name"],
+                email= user_created["email"],
                 password=user_created["password"]
             )
         
@@ -38,13 +39,16 @@ class UserService:
 
             users = self.repository.get_all_users()
 
-            return [
-                UserSchema(
-                    id=str(doc["_id"]),
-                    name=doc["name"],
-                    password=doc["password"]
-                ) for doc in users
-            ]
+            for doc in users:
+
+                return [
+                    UserSchema(
+                        id=str(doc["_id"]),
+                        name=doc["name"],
+                        email=doc["email"],
+                        password=doc["password"]
+                    ) 
+                ]
         
         except Exception as e:
             raise Exception(f"Erro ao listar users: {str(e)}")
@@ -63,6 +67,7 @@ class UserService:
             return UserSchema(
                 id=str(user["_id"]),
                 name=user["name"],
+                email=user["email"],
                 password=user["password"]
             )
         
@@ -74,12 +79,16 @@ class UserService:
     def update_user(self, user_id: str, user: CreateUser) -> UserSchema:
         
         try:
+
             if not self.repository.update_user(user_id, user):
                 raise NotFoundError(user_id)
+            
             updated_user = self.repository.get_user_by_id(user_id)
+
             return UserSchema(
                 id=user_id,
                 name=updated_user["name"],
+                email=updated_user["email"],
                 password=updated_user["password"]
             )
         

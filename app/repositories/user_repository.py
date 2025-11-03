@@ -27,6 +27,11 @@ class UserRepository:
     def get_user_by_id(self, user_id: str) -> Optional[dict]:
         return self.db.users.find_one({"_id": ObjectId(user_id)})
     
+    
+
+    def get_user_by_email(self, user_email: str):
+        return self.db.users.find_one({"email": user_email})
+    
 
 
     def get_all_users(self) -> List[dict]:

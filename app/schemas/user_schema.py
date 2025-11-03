@@ -1,11 +1,12 @@
 from pydantic import BaseModel, Field
 from typing import Optional
+
+
 # Schema criar usuário (sem ID)
 class CreateUser(BaseModel):
     name: str
     email: str
     password: str
-
 
 # Schema resposta (com ID como str opcional)
 class UserSchema(BaseModel):

@@ -1,10 +1,12 @@
 from typing import List
+
 import re
+
 from app.repositories.user_repository import UserRepository
+
 from app.schemas.user_schema import CreateUser, UserSchema
+
 from app.middlewares.exceptions import BadRequestError, NotFoundError, UnauthorizedError
-
-
 
 class UserService:
 
@@ -18,7 +20,6 @@ class UserService:
         # Verifica se já existe um email desse no db, caso já exista, não continuar codigo
         if self.repository.get_user_by_email(user.email):
             raise UnauthorizedError("Usuário já existente")
-        
         
         # Verifica se há o padrão certo do email
         if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', user.email):

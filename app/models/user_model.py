@@ -6,6 +6,7 @@ class UserModel(BaseModel):
 
     id: Optional[str] = None  
     name: str
+    email: str
     password: str  
 
     class Config:

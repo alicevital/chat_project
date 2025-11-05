@@ -18,7 +18,6 @@ def get_db():
         pass
 
 
-
 # Dependência para o Service (injeta Repository e DB)
 def get_user_service(db=Depends(get_db)) -> UserService:
     repository = UserRepository(db)

@@ -1,5 +1,6 @@
 from typing import List, Optional
 from bson import ObjectId
+from app.infra.providers.hash_provider import hash_generator,hash_verifier 
 from app.schemas.user_schema import CreateUser, UserSchema
 
 
@@ -15,6 +16,7 @@ class UserRepository:
     def create_user(self, user: CreateUser) -> str:
 
         user_dict = user.model_dump(exclude_unset=True)
+
         result = self.db.users.insert_one(user_dict)
 
         if not result.inserted_id:

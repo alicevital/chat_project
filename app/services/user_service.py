@@ -1,5 +1,6 @@
 from typing import List
 import re
+from app.infra.providers.hash_provider import hash_generator, hash_verifier
 from app.repositories.user_repository import UserRepository
 from app.schemas.user_schema import CreateUser, UserSchema
 from app.middlewares.exceptions import BadRequestError, NotFoundError, UnauthorizedError
@@ -23,6 +24,16 @@ class UserService:
         # Verifica se há o padrão certo do email
         if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', user.email):
             raise BadRequestError("E mail inválido")
+        
+
+        hashed_password = hash_generator(user.password)
+
+
+        if hash_verifier(user.password, hashed_password) == False:
+            raise Exception("fffffffffffffff")
+        
+        user.password = hashed_password
+    
 
         try:
             user_created = self.repository.create_user(user)

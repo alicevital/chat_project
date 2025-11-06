@@ -57,20 +57,21 @@ class UserService:
         try:
 
             users = self.repository.get_all_users()
-
+            list = []
+            
             if not users:
                 return BadRequestError("Não Há Usuários")
             
             for doc in users:
-
-                return [
+                list.append(
                     UserSchema(
                         id=str(doc["_id"]),
                         name=doc["name"],
                         email=doc["email"],
                         password=doc["password"]
                     ) 
-                ]
+                )
+            return list
         
         except Exception as e:
             raise Exception(f"Erro ao listar users: {str(e)}")

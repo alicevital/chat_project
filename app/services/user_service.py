@@ -3,7 +3,7 @@ import re
 from app.infra.providers.hash_provider import hash_generator, hash_verifier
 from app.repositories.user_repository import UserRepository
 from app.schemas.user_schema import CreateUser, UserSchema
-from app.middlewares.exceptions import BadRequestError, NotFoundError, UnauthorizedError
+from app.middlewares.exceptions import BadRequestError, NotFoundError, UnauthorizedError, InternalServerError
 
 
 
@@ -30,7 +30,7 @@ class UserService:
 
 
         if hash_verifier(user.password, hashed_password) == False:
-            raise Exception("fffffffffffffff")
+            raise InternalServerError("Senha não verificada")
         
         user.password = hashed_password
     
@@ -100,10 +100,22 @@ class UserService:
 
     def update_user(self, user_id: str, user: CreateUser) -> UserSchema:
         
+
+        hashed_password = hash_generator(user.password)
+
+
+        if hash_verifier(user.password, hashed_password) == False:
+            raise InternalServerError("Senha não verificada")
+        
+        user.password = hashed_password
+        
+        
         try:
 
             if not self.repository.update_user(user_id, user):
                 raise NotFoundError(user_id)
+            
+            
             
             updated_user = self.repository.get_user_by_id(user_id)
 

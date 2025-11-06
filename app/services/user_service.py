@@ -100,6 +100,22 @@ class UserService:
 
 
     def update_user(self, user_id: str, user: CreateUser) -> UserSchema:
+
+        updated_user = self.repository.get_user_by_id(user_id)
+
+        if not updated_user:
+            raise BadRequestError("")
+
+
+         # Verifica se há o padrão certo do email
+        if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', user.email):
+            raise BadRequestError("E mail inválido")
+        
+
+        if not self.repository.get_user_by_id(user_id)["email"] == user.email:
+                # Verifica se já existe um email desse no db, caso já exista, não continuar codigo
+                if self.repository.get_user_by_email(user.email):
+                    raise UnauthorizedError("Usuário já existente")
         
 
         hashed_password = hash_generator(user.password)
@@ -111,20 +127,17 @@ class UserService:
         user.password = hashed_password
         
         
-        try:
+        try:      
 
             if not self.repository.update_user(user_id, user):
                 raise NotFoundError(user_id)
-            
-            
-            
-            updated_user = self.repository.get_user_by_id(user_id)
+                    
 
             return UserSchema(
                 id=user_id,
-                name=updated_user["name"],
-                email=updated_user["email"],
-                password=updated_user["password"]
+                name= user.name,
+                email= user.email,
+                password= user.password
             )
         
         except Exception as e:

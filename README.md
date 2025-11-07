@@ -8,7 +8,7 @@ Plataforma de chat desenvolvida com **Python**, **FastAPI**, **WebSockets** e **
 - **FastAPI** — API e gerenciamento de WebSockets  
 - **RabbitMQ** — Mensageria e comunicação assíncrona  
 - **JWT** — Autenticação e gerenciamento de sessões  
-- **Banco de Dados** (SQL ou NoSQL) — Persistência de mensagens e usuários  
+- **MongoDB** — Persistência de mensagens e usuários  
 
 ---
 

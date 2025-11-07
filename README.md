@@ -2,15 +2,11 @@
 
 Plataforma de chat desenvolvida com **Python**, **FastAPI**, **WebSockets** e **RabbitMQ**, permitindo comunicação em tempo real entre usuários, com suporte a histórico de mensagens e autenticação segura via JWT.
 
----
-
 ## Tecnologias Utilizadas
 - **FastAPI** — API e gerenciamento de WebSockets  
 - **RabbitMQ** — Mensageria e comunicação assíncrona  
 - **JWT** — Autenticação e gerenciamento de sessões  
 - **Banco de Dados** (SQL ou NoSQL) — Persistência de mensagens e usuários  
-
----
 
 ## Requisitos Funcionais
 
@@ -34,12 +30,8 @@ Plataforma de chat desenvolvida com **Python**, **FastAPI**, **WebSockets** e **
   - Timestamp
   - Conteúdo
 
----
-
 ## Status do Projeto
 Em desenvolvimento. Instruções de instalação, execução e deploy serão adicionadas em breve.
-
----
 
 ## Próximos Passos
 - Adicionar documentação da API

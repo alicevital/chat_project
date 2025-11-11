@@ -1,0 +1,74 @@
+<!-- CHAT GLOBAL -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mensagens Globais</title>
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+  <div class="chat-container">
+
+    <header class="chat-header">
+        <h2>Chat</h2>
+        <a href="home.html" id="backHomeBtn" class="back-btn">Voltar</a>
+    </header>
+    
+    <!-- DIV na qual vai conter a lista de mensagens da fila no RabbitMQ -->
+    <div class="chat-box" id="messagesQueue"></div>
+
+    <form class="chat-form" id="InsertForm">
+      <input type="text" name="text" placeholder="Digite sua mensagem..." required>
+      <button type="submit">Enviar</button>
+    </form>
+  </div>
+
+  <script>
+
+
+    async function insert_mensages() {
+
+      const form = document.getElementById('InsertForm');
+
+      form.addEventListener('submit', async () => {
+
+        const data = { text: form.text.value.trim() }
+
+        // função de inserir mensagem para a fila
+      })
+    }
+
+    async function loadMessages() {
+
+      try {
+        // Irá pegar da URL da fila RabbitMQ e colocar toda em uma variavel JSON
+        const response = await fetch('RABBITMQ_URL');
+        const messages = await response.json();
+
+        // ID da DIV na qual vai conter a lista de mensagens da fila no RabbitMQ 
+        const queue = document.getElementById('messagesQueue');
+
+        // MAP de todas as mensagens
+        queue.innerHTML = messages.map(msg => ` 
+          <div class="message">
+            <div class="message-info">
+              <span class="username">${msg.user_id}</span> 
+              <span class="time">(${ new Date(msg.timestamp).toLocaleString() })</span>
+              <div class="message-text">${msg.content}</div>
+            </div>
+          </div>
+        `).join('');
+
+      } catch (error) {
+        console.error('Erro ao carregar mensagens:', error);
+      }
+
+    }
+
+    // Carrega inicialmente e a cada 5s
+    loadMessages();
+    setInterval(loadMessages, 5000);
+  </script>
+</body>
+</html>

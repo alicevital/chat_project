@@ -19,3 +19,7 @@ class UserSchema(BaseModel):
         "from_attributes": True,  # Pydantic v2: permite criar de dicts (ex: do Mongo)
         "validate_assignment": True  # Valida ao atribuir valores
     }
+
+class LoginSchema(BaseModel):
+    email: str
+    password: str

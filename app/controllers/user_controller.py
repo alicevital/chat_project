@@ -1,10 +1,14 @@
-from fastapi import APIRouter, Depends, WebSocket
+from fastapi import APIRouter, Depends, WebSocket, HTTPException
 from typing import List
+from datetime import datetime, timedelta, timezone
 
-from app.schemas.user_schema import CreateUser, UserSchema
+from app.schemas.user_schema import CreateUser, UserSchema, LoginSchema
 from app.database.database import get_database
 from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
+from app.infra.providers.hash_provider import hash_verifier
+from app.main import  ALGORITHM, SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES
+from jose import jwt, JWTError
 
 
 UserRouter = APIRouter(tags=['CRUD de Usuários'])
@@ -17,38 +21,58 @@ def get_db():
     finally:
         pass
 
-
-# Dependência para o Service (injeta Repository e DB)
 def get_user_service(db=Depends(get_db)) -> UserService:
     repository = UserRepository(db)
     return UserService(repository)
 
+def create_token(user_id, duration_token=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):
+    expiration_date = datetime.now(timezone.utc) + duration_token
+    dic_info = {"sub": str(user_id), "exp": expiration_date}
+    encoded_token = jwt.encode(dic_info, SECRET_KEY, ALGORITHM)
+    return encoded_token
 
 
-@UserRouter.post("/users/register", response_model=UserSchema, tags=['Criar Usuário'])
+
+@UserRouter.post("/users/register", response_model=UserSchema)
 def create_user(user: CreateUser, service: UserService = Depends(get_user_service)):
     return service.create_user(user)
 
 
 
-@UserRouter.get("/users", response_model=List[UserSchema], tags=['Lista de Todos os Usuários'])
+@UserRouter.get("/users", response_model=List[UserSchema])
 def list_all_users(service: UserService = Depends(get_user_service)):
     return service.get_all_users()
 
 
 
-@UserRouter.get("/users/{user_id}", response_model=UserSchema, tags=['Achar Usuário'])
+@UserRouter.get("/users/{user_id}", response_model=UserSchema)
 def get_user(user_id: str, service: UserService = Depends(get_user_service)):
     return service.get_user_by_id(user_id)
 
 
 
-@UserRouter.put("/users/{user_id}", response_model=UserSchema, tags=['Update de Usuário'])
+@UserRouter.put("/users/{user_id}", response_model=UserSchema)
 def update_user(user: CreateUser, user_id: str, service: UserService = Depends(get_user_service)):
     return service.update_user(user_id, user)
 
 
 
-@UserRouter.delete("/users/{user_id}", tags=['Deletar Usuário'])
+@UserRouter.delete("/users/{user_id}", )
 def delete_user(user_id: str, service: UserService = Depends(get_user_service)):
     return service.delete_user(user_id)
+
+@UserRouter.post("/users/login")
+def login(login_schema: LoginSchema, db=Depends(get_db)):
+    repository = UserRepository(db)
+
+    user = repository.get_user_by_email(login_schema.email)
+
+    if not user or not hash_verifier(login_schema.password, user["password"]):
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    else:
+        access_token = create_token(user["_id"])
+        return {
+            "email": user["email"],
+            "access_token": access_token,
+            "token_type": "Bearer" 
+        }

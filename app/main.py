@@ -1,17 +1,21 @@
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+
+app = FastAPI(title="PixelChat")
 
 from app.controllers.user_controller import UserRouter
 
-
-# Criação da API
-app = FastAPI(title="PixelChat")
-
-# Rotas da API
 app.include_router(UserRouter)
 
 
-# Front-End
 @app.get("/")
 def root():
     return FileResponse("app/views/html/cadastro.html")

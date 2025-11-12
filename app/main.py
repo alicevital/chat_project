@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 import os
+
 
 load_dotenv()
 
@@ -15,7 +17,11 @@ from app.controllers.user_controller import UserRouter
 
 app.include_router(UserRouter)
 
+app.mount("/styles", StaticFiles(directory="app/views/styles"), name="styles") 
 
-@app.get("/")
-def root():
-    return FileResponse("app/views/html/cadastro.html")
+app.mount("/html", StaticFiles(directory="app/views/html", html=True), name="html") 
+
+
+@app.get("/html/cadastro.html") 
+def root(): 
+    return FileResponse("app/views/html/cadastro.html") 

@@ -8,23 +8,76 @@
 </head>
 <body>
   <div class="container">
-    <form class="form">
+    <form class="form" id="registerForm">
       <h2>Criar Conta</h2>
+
       <div class="input-group">
-        <label>Nome</label>
-        <input type="text" placeholder="Digite seu nome" required>
+        <label for="name">Nome</label>
+        <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
       </div>
+
       <div class="input-group">
-        <label>Email</label>
-        <input type="email" placeholder="Digite seu email" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Digite seu email" required>
       </div>
+
       <div class="input-group">
-        <label>Senha</label>
-        <input type="password" placeholder="Crie uma senha" required>
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" placeholder="Crie uma senha" required>
       </div>
+
       <button type="submit">Cadastrar</button>
       <p class="link">Já tem conta? <a href="login.html">Entrar</a></p>
     </form>
   </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+
+    const form = document.getElementById('registerForm');
+
+    form.addEventListener('submit', async () => {
+
+      const data = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        password: form.password.value.trim()
+      };
+
+      // O que Acontece após o push do botão de submit -->
+      try {
+
+        // conexão com a API e criação de usuário
+        const response = await fetch('http://localhost:8000/users/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+
+
+        // realocação ou erro
+        if (response.ok) {
+
+          alert('✅ Cadastro realizado com sucesso!');
+          
+
+          window.location.href = '/html/login.html';
+        } else {
+          const error = await response.json();
+          alert('Erro: ' + (error.detail || 'Falha ao cadastrar usuário.'));
+        }
+
+      } catch (err) {
+        console.error('Erro:', err);
+        alert('Erro de conexão : ', err);
+      }
+
+    });
+
+
+  </script>
 </body>
 </html>

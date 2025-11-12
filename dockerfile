@@ -1,7 +1,7 @@
 # Dockerfile
 FROM python:3.11-slim
 
-#Define o diretório de trabalho dentro do conteiner
+# Define o diretório de trabalho dentro do conteiner
 WORKDIR /app
 
 # copia e Instala dependências

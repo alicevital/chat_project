@@ -1,3 +1,4 @@
+import asyncio
 from typing import List
 
 from fastapi import WebSocket
@@ -6,7 +7,6 @@ class ConnectionManager:
     '''
         Gerencia as conexões websockets
     '''
-
     def __init__(self):
         self.connections: List[WebSocket] = []
 

@@ -1,12 +1,12 @@
 from pydantic import BaseModel
-
+from datetime import datetime
 from typing import Optional
 
-class MessageModel(BaseModel):
-    id: str
-    name_user: str
-    content: str
+class MessageCreate(BaseModel):
+    chat_id: str
+    remetente_id: str
+    destinatario_id: Optional[str] = None
+    conteudo: str
 
-    class Config:
-        arbitrary_types_allowed = True
-        json_encoders = {str:str}
+class MessageDB(MessageCreate):
+    timestamp: datetime

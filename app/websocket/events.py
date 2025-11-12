@@ -1,6 +1,7 @@
+import asyncio
 from fastapi import APIRouter, WebSocket
-from websocket.manager import manager
-from rabbit.broker import send_to_queue
+from app.websocket.manager import manager
+from app.rabbit.broker import send_to_queue
 
 router = APIRouter()
 

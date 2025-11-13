@@ -36,7 +36,8 @@
 
     const form = document.getElementById('registerForm');
 
-    form.addEventListener('submit', async () => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
       const data = {
         name: form.name.value.trim(),

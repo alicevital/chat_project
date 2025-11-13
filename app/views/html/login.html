@@ -8,19 +8,72 @@
 </head>
 <body>
   <div class="container">
-    <form class="form">
+    <form class="form" id="loginForm">
       <h2>Entrar</h2>
+
       <div class="input-group">
         <label>Email</label>
-        <input type="email" placeholder="Digite seu email" required>
+        <input type="email" name="email" placeholder="Digite seu email" required>
       </div>
+
       <div class="input-group">
         <label>Senha</label>
-        <input type="password" placeholder="Digite sua senha" required>
+        <input type="password" name="password" placeholder="Digite sua senha" required>
       </div>
+
+      <div class="input-group">
+        <label>Conectar via ID do usuário parceiro</label>
+        <input type="password" name="ID" placeholder="Digite sua senha" required>
+      </div>
+
       <button type="submit">Entrar</button>
       <p class="link">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
     </form>
   </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = { 
+        email: form.email.value.trim(),
+        password: form.password.value.trim() 
+      };
+
+      const partner_user_id = form.ID.value.trim()
+
+      try {
+        const response = await fetch('http://localhost:8000/users/login', {  // Endpoint de Login
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data) // email e senha
+        });
+
+        if (response.ok) {
+
+          const result = await response.json();
+          localStorage.setItem('token', result.access_token);  // Salva JWT
+
+          alert('✅ Login realizado com sucesso!');
+          window.location.href = '/html/chat.html';  // Vai para chat
+          
+        } else {
+
+          const error = await response.json();
+
+          alert('Erro: ' + (error.detail || 'Falha no login.'));
+
+        }
+      } catch (err) {
+        console.error('Erro:', err);
+        alert('Erro de conexão: ' + err.message);
+      }
+    });
+  </script>
+
 </body>
 </html>

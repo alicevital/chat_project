@@ -7,6 +7,7 @@ class MessageCreate(BaseModel):
     remetente_id: str
     destinatario_id: Optional[str] = None
     conteudo: str
+    data: datetime.now
 
 class MessageDB(MessageCreate):
     timestamp: datetime

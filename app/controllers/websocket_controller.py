@@ -3,6 +3,7 @@ import pika, json
 import os
 import uuid
 WebSocketRouter = APIRouter()
+from datetime import datetime
 
 # Lista de conexões
 global_connections = dict()
@@ -21,12 +22,16 @@ def publish_message(queue, message):
 async def ws_global(websocket: WebSocket):
     id = str(uuid.uuid4())
     await websocket.accept()
+    print("oi, josé")
+    print(id)
     global_connections[id] =websocket
     try:
         while True:
             data = await websocket.receive_text()
             message = {"chat_type": "global", "message": data}
-            publish_message("chat_global", message)
+            await websocket.send_text(json.dumps(message))
+            # manage_websocket.send(id, message)
+            # publish_message("chat_global", message)
     except WebSocketDisconnect:
         del global_connections[id]#(websocket)
 

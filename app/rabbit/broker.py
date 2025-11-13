@@ -1,5 +1,6 @@
 import aio_pika
 import os
+import json
 
 RABBITMQ_URL = os.getenv("RABBITMQ_URL","amqp://guest:guest@rabbitmq/")
 

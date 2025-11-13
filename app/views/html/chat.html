@@ -1,10 +1,10 @@
-<!-- CHAT GLOBAL -->
+<!-- CHAT -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mensagens Globais</title>
+  <title>Mensagens</title>
   <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
 
     <header class="chat-header">
         <h2>Chat</h2>
-        <a href="home.html" id="backHomeBtn" class="back-btn">Voltar</a>
+        <a href="cadastro.html" id="backHomeBtn" class="back-btn" onclick="disconect()">Voltar</a>
     </header>
     
     <!-- DIV na qual vai conter a lista de mensagens da fila no RabbitMQ -->
@@ -26,29 +26,29 @@
 
   <script>
 
+// função para mandar mensagem
+    const form = document.getElementById('InsertForm');
 
-    async function insert_mensages() {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-      const form = document.getElementById('InsertForm');
+      const data = { text: form.text.value.trim() }
 
-      form.addEventListener('submit', async () => {
+      // função de inserir mensagem para a fila
+    })
 
-        const data = { text: form.text.value.trim() }
-
-        // função de inserir mensagem para a fila
-      })
-    }
-
+    
+// dar load de mensagens
     async function loadMessages() {
 
       try {
         // Irá pegar da URL da fila RabbitMQ e colocar toda em uma variavel JSON
-        const response = await fetch('RABBITMQ_URL');
+        const response = await fetch("");
         const messages = await response.json();
 
         // ID da DIV na qual vai conter a lista de mensagens da fila no RabbitMQ 
         const queue = document.getElementById('messagesQueue');
-
+  
         // MAP de todas as mensagens
         queue.innerHTML = messages.map(msg => ` 
           <div class="message">
@@ -64,6 +64,21 @@
         console.error('Erro ao carregar mensagens:', error);
       }
 
+    }
+
+
+    async function disconect() {
+      
+      try {
+        localStorage.removeItem('token')
+        alert('✅ Desconectando....');
+
+        // const response = await fetch("");
+
+
+      } catch (error) {
+        console.error('Erro ao carregar mensagens:', error);
+      }
     }
 
     // Carrega inicialmente e a cada 5s

@@ -6,7 +6,7 @@ from datetime import datetime
 class CreateMessage(BaseModel):
     chat_id: str
     sender_id: str
-    recipient_id: str
+    recipient_id: Optional[str] = None  # Opcional para chat global
     content: str
     data: datetime.now
 
@@ -14,7 +14,7 @@ class MessageSchema(BaseModel):
     id: Optional[str] = Field(default=None, description="ID gerado pelo Mongodb")
     chat_id: str
     sender_id: str
-    recipient_id: str
+    recipient_id: Optional[str] = None  # Opcional para chat global
     content: str
     data: datetime.now
 

@@ -22,4 +22,4 @@ class ConnectionManager:
         for ws in self.connections:
             await ws.send_text(message)
 
-manager = ConnectionManager()                        
+manager = ConnectionManager()                     

@@ -72,6 +72,7 @@ def login(login_schema: LoginSchema, db=Depends(get_db)):
     else:
         access_token = create_token(user["_id"])
         return {
+            "user_id": str(user["_id"]),
             "email": user["email"],
             "access_token": access_token,
             "token_type": "Bearer" 

@@ -21,11 +21,6 @@
         <input type="password" name="password" placeholder="Digite sua senha" required>
       </div>
 
-      <div class="input-group">
-        <label>Conectar via ID do usuário parceiro</label>
-        <input type="password" name="ID" placeholder="Digite sua senha" required>
-      </div>
-
       <button type="submit">Entrar</button>
       <p class="link">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
     </form>
@@ -41,8 +36,6 @@
         email: form.email.value.trim(),
         password: form.password.value.trim() 
       };
-
-      const partner_user_id = form.ID.value.trim()
 
       try {
         const response = await fetch('http://localhost:8000/users/login', {  // Endpoint de Login

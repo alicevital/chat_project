@@ -240,3 +240,122 @@ body {
   background: #f0f0f0;
   transform: scale(1.05);
 }
+
+/* Estilos para seleção de destinatário */
+.receiver-section {
+  padding: 1rem;
+}
+
+.receiver-section h3 {
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+.receiver-section .input-group {
+  margin-bottom: 1rem;
+}
+
+.receiver-section button {
+  margin-top: 0.5rem;
+}
+
+.users-list {
+  margin-top: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.users-list h4 {
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem;
+  margin-bottom: 0.5rem;
+  background: #f4f4f4;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.user-item span {
+  flex: 1;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.user-item button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  width: auto;
+  margin-left: 0.5rem;
+}
+
+/* Estilos para seção de chat */
+.chat-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-info {
+  padding: 0.8rem 1rem;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.chat-info p {
+  margin: 0;
+  color: #555;
+}
+
+.chat-info button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  width: auto;
+  background: #888;
+}
+
+.chat-info button:hover {
+  background: #777;
+}
+
+/* Estilos para mensagens próprias e de outros */
+.message.own-message {
+  background: #4e54c8;
+  color: white;
+  margin-left: auto;
+  align-self: flex-end;
+}
+
+.message.own-message .message-info {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.message.own-message .username {
+  color: rgba(255, 255, 255, 1);
+}
+
+.message.own-message .time {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.message.own-message .message-text {
+  color: white;
+}
+
+.message.other-message {
+  background: #e0e0e0;
+  color: #333;
+  margin-right: auto;
+  align-self: flex-start;
+}

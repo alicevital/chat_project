@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
+from app.controllers.user_controller import UserRouter
 import os
-
 
 load_dotenv()
 
@@ -12,8 +12,6 @@ ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 app = FastAPI(title="PixelChat")
-
-from app.controllers.user_controller import UserRouter
 
 app.include_router(UserRouter)
 

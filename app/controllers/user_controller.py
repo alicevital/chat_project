@@ -32,7 +32,6 @@ def create_token(user_id, duration_token=timedelta(minutes=ACCESS_TOKEN_EXPIRE_M
     return encoded_token
 
 
-
 @UserRouter.post("/users/register", response_model=UserSchema)
 def create_user(user: CreateUser, service: UserService = Depends(get_user_service)):
     return service.create_user(user)

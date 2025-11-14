@@ -65,6 +65,7 @@ def get_message_service():
 
 async def send_to_room(room_id: str, message: dict):
     """Envia mensagem para todos os WebSockets conectados na sala"""
+    global active_connections
     if room_id in active_connections:
         disconnected = []
         for websocket in active_connections[room_id]:
@@ -86,8 +87,9 @@ async def send_to_room(room_id: str, message: dict):
 @ChatRouter.websocket("/ws/chat")
 async def websocket_chat(websocket: WebSocket):
     """Endpoint WebSocket para chat privado"""
+    global active_connections
     await websocket.accept()
-    
+    print("web socket aceito")
     user_id = None
     room_id = None
     db = get_database()
@@ -98,10 +100,14 @@ async def websocket_chat(websocket: WebSocket):
     try:
         # Espera pela primeira mensagem de autenticação
         auth_received = False
+        print("começo do trycatch")
         
         while True:
+            print("começo do while (while true)")
             data = await websocket.receive_text()
+            print("antes do mensage data ", data)
             message_data = json.loads(data)
+            print(message_data)
             
             # Primeira mensagem deve ser de autenticação
             if not auth_received:
@@ -182,6 +188,7 @@ async def websocket_chat(websocket: WebSocket):
                     
                     if websocket not in active_connections[room_id]:
                         active_connections[room_id].append(websocket)
+                        #  active_connections[id] = websocket
                     
                     # Prepara mensagem para enviar via WebSocket
                     chat_message = ChatMessage(
@@ -200,7 +207,7 @@ async def websocket_chat(websocket: WebSocket):
                     
                     # Envia para todos os WebSockets da sala (incluindo o remetente)
                     await send_to_room(room_id, message_dict)
-                    
+                    # id, mes
                 except Exception as e:
                     await websocket.send_json({
                         "type": "error",
@@ -242,4 +249,3 @@ async def get_chat_history(
         return messages
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-

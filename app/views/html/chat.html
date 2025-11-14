@@ -158,7 +158,7 @@
 
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        
+        console.log(data)
         if (data.type === 'auth_success') {
           console.log('Autenticação realizada com sucesso');
           currentUserId = data.user_id;

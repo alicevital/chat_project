@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 class AuthMessage(BaseModel):
     """Schema para primeira mensagem de autenticação via WebSocket"""

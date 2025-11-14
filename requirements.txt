@@ -44,3 +44,5 @@ tzdata==2025.2
 urllib3==2.2.1
 uvicorn==0.37.0
 zope.interface==8.0.1
+pika
+uvicorn[standard]

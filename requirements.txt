@@ -1,3 +1,5 @@
+aio-pika==9.5.8
+aiormq==6.9.2
 annotated-types==0.7.0
 anyio==4.11.0
 asgiref==3.8.1
@@ -18,8 +20,11 @@ greenlet==3.2.4
 h11==0.16.0
 idna==3.7
 load-dotenv==0.1.0
+multidict==6.7.0
 oauthlib==3.2.2
+pamqp==3.3.0
 passlib==1.7.4
+propcache==0.4.1
 pyasn1==0.6.1
 pycparser==2.22
 pydantic==2.12.0
@@ -43,4 +48,5 @@ typing_extensions==4.15.0
 tzdata==2025.2
 urllib3==2.2.1
 uvicorn==0.37.0
+yarl==1.22.0
 zope.interface==8.0.1

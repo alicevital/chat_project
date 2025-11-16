@@ -2,6 +2,7 @@ import datetime
 import os
 import aio_pika
 import asyncio
+from app.database.database import get_database
 from app.infra.providers.rabbitmq_global_consumer import start_global_consumer
 from fastapi import APIRouter, WebSocket
 from fastapi.websockets import WebSocketDisconnect
@@ -27,6 +28,11 @@ async def start_global_chat():
     asyncio.create_task(start_global_consumer(rabbit_conn, clients))
 
 
+# >>> COLLECTION DO MONGO <<<
+db = get_database()
+global_collection = db["global_messages"] 
+
+
 @GlobalRouter.websocket("/ws/{username}")
 async def ws_endpoint(ws: WebSocket, username: str):
     await ws.accept()
@@ -39,12 +45,20 @@ async def ws_endpoint(ws: WebSocket, username: str):
 
             final_message = f"[{time}] {username}: {text}"
 
+            # Envia para RabbitMQ (broadcast)
             await rabbit_channel.default_exchange.publish(
                 aio_pika.Message(
                     body=final_message.encode()
                 ),
                 routing_key="global_chat"
             )
+
+            # >>> PERSISTE NO MONGO <<<
+            global_collection.insert_one({
+                "sender": username,
+                "message": text,
+                "timestamp": time
+            })
 
     except WebSocketDisconnect:
         clients.remove(ws)

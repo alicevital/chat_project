@@ -1,13 +1,12 @@
 from fastapi import APIRouter, Depends, WebSocket, HTTPException
 from typing import List
 from datetime import datetime, timedelta, timezone
-
 from app.schemas.user_schema import CreateUser, UserSchema, LoginSchema
 from app.database.database import get_database
 from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
 from app.infra.providers.hash_provider import hash_verifier
-from app.main import  ALGORITHM, SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from jose import jwt, JWTError
 
 

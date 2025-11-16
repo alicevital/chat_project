@@ -6,6 +6,7 @@ PrivateRouter = APIRouter()
 # salas do chat privado
 private_rooms = {}  # { room_id: set(WebSocket, WebSocket) }
 
+
 @PrivateRouter.websocket("/ws/private/{room_id}/{username}")
 async def private_chat(ws: WebSocket, room_id: str, username: str):
     
@@ -13,7 +14,7 @@ async def private_chat(ws: WebSocket, room_id: str, username: str):
     if room_id not in private_rooms:
         private_rooms[room_id] = set()
 
-    # 🚫 SE A SALA JÁ TEM 2 PESSOAS → RECUSAR TERCEIRO
+    # SE A SALA JÁ TEM 2 PESSOAS → RECUSAR TERCEIRO
     if len(private_rooms[room_id]) >= 2:
         await ws.accept()
         await ws.send_text("A sala está cheia: apenas 2 pessoas podem participar deste chat privado.")

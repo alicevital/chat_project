@@ -4,13 +4,16 @@ from app.models.message_model import MessageModel
 
 
 class MessageRepository:
+    
     """Repositório para operações de mensagens no MongoDB"""
 
     def __init__(self, db):
         self.db = db
 
     def create_message(self, message: MessageModel) -> dict:
+
         """Insere uma mensagem no MongoDB"""
+
         message_dict = message.model_dump(exclude_unset=True)
         
         result = self.db.messages.insert_one(message_dict)
@@ -22,7 +25,9 @@ class MessageRepository:
         return message_dict
 
     def get_messages_by_room(self, room_id: str, limit: int = 100) -> List[dict]:
+
         """Busca mensagens de uma sala específica, ordenadas por timestamp"""
+
         messages = list(
             self.db.messages.find({"room_id": room_id})
             .sort("timestamp", 1)  # 1 = ascendente (mais antigas primeiro)

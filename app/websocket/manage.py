@@ -3,9 +3,9 @@ from typing import Dict
 from datetime import datetime
 import asyncio
 import json
-from database.database import get_database
-from models.user_model import UserModel
-from models.message_model import MessageModel
+from app.database.database import get_database
+from app.models.user_model import UserModel
+from app.models.message_model import MessageModel
 
 
 class WebSocketManager:

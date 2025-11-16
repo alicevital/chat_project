@@ -1,14 +1,14 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from fastapi import Depends
 from datetime import datetime
-from models.user_model import UserModel
-from models.message_model import MessageModel
-from app.database import get_db
-from websocket.manage import manager
+from app.models.user_model import UserModel
+from app.models.message_model import MessageModel
+from app.database.database import get_database
+from app.websocket.manage import manager
 
-router = APIRouter(prefix="/ws", tags=["WebSocket"])
+ws_router = APIRouter(prefix="/ws", tags=["WebSocket"])
 
-@router.websocket("/connect/{socket_id}")
+@ws_router.websocket("/connect/{socket_id}")
 async def websocket_endpoint(websocket: WebSocket, socket_id: str):
  
     await websocket.accept()
@@ -32,10 +32,10 @@ async def websocket_endpoint(websocket: WebSocket, socket_id: str):
         await manager.disconnect(socket_id)
         await websocket.close()
 
-@router.post("/send")
+@ws_router.websocket("/send")
 async def send_private_message(message: MessageModel):
 
-    db = get_db()
+    db = get_database()
     
     dest = await db.users.find_one({"_id": message.destinatario_id})
     if not dest or "socket_id" not in dest:
@@ -50,7 +50,7 @@ async def send_private_message(message: MessageModel):
     return {"status": "mensagem enviada"}
 
 
-@router.post("/broadcast")
+@ws_router.websocket("/broadcast")
 async def broadcast_message(payload: dict):
     
     msg = payload.get("message", "")

@@ -3,9 +3,10 @@ from typing import Dict
 from datetime import datetime
 import asyncio
 import json
-from server.db import get_db
+from database.database import get_database
 from models.user_model import UserModel
 from models.message_model import MessageModel
+
 
 class WebSocketManager:
     
@@ -19,7 +20,7 @@ class WebSocketManager:
         async with self.lock:
             self.active_connections[socket_id] = websocket
 
-        db = get_db()
+        db = get_database()
 
         existing = await db.users.find_one({"email": user.email, "connected": True})
         if existing:
@@ -47,7 +48,7 @@ class WebSocketManager:
         async with self.lock:
             self.active_connections.pop(socket_id, None)
 
-        db = get_db()
+        db = get_database()
         await db.users.update_one(
             {"socket_id": socket_id},
             {
@@ -64,7 +65,7 @@ class WebSocketManager:
         if not websocket:
             raise Exception("Conexão inativa")
 
-        db = get_db()
+        db = get_database()
         user = await db.users.find_one({"socket_id": socket_id, "connected": True})
         if not user:
             raise Exception("Usuário não conectado")
@@ -78,7 +79,7 @@ class WebSocketManager:
 
     async def broadcast(self, message: str):
         
-        db = get_db()
+        db = get_database()
 
         async with self.lock:
             

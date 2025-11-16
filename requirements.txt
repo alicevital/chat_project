@@ -9,8 +9,6 @@ click==8.3.0
 colorama==0.4.6
 cryptography==42.0.7
 DateTime==5.5
-Django==5.0.6
-django-allauth==0.63.1
 dnspython==2.8.0
 ecdsa==0.19.1
 fastapi==0.118.3
@@ -44,3 +42,7 @@ tzdata==2025.2
 urllib3==2.2.1
 uvicorn==0.37.0
 zope.interface==8.0.1
+pika
+uvicorn[standard]
+websockets
+asyncio

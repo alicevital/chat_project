@@ -12,8 +12,6 @@ class UserService:
     def __init__(self, repository: UserRepository):
         self.repository = repository
 
-
-
     def create_user(self, user: CreateUser) -> UserSchema:
 
         # Verifica se já existe um email desse no db, caso já exista, não continuar codigo

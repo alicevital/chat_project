@@ -3,8 +3,8 @@ from fastapi import Depends
 from datetime import datetime
 from models.user_model import UserModel
 from models.message_model import MessageModel
-from server.db import get_db
-from websocket.manager import manager
+from app.database import get_db
+from websocket.manage import manager
 
 router = APIRouter(prefix="/ws", tags=["WebSocket"])
 

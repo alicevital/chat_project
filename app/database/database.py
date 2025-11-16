@@ -1,10 +1,8 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
+from app.core.config import MONGO_URI, DATABASE_NAME
 import os
 
-
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://root:root@localhost:27017")  # Default local com auth
-DATABASE_NAME = "chat_database"
 # no computador: mongodb://root:root@localhost:27017 em produção: mongodb+srv://root:<db_password>@cluster0.i6ffdcs.mongodb.net/
 
 client = None

@@ -1,302 +1,150 @@
-<!-- CHAT -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Privado</title>
-  <link rel="stylesheet" href="../styles/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Chat Privado</title>
+    <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
-  <div class="chat-container">
-    <header class="chat-header">
-      <h2>Chat Privado</h2>
-      <a href="login.html" id="backHomeBtn" class="back-btn" onclick="disconnect()">Sair</a>
-    </header>
 
-    <!-- Seção para selecionar destinatário -->
-    <div id="selectReceiverSection" class="receiver-section">
-      <a href="chat_global.html">Conectar Chat Global</a>
-      <h3>Selecione com quem conversar</h3>
-      <div class="input-group">
-        <label>ID do Usuário Destinatário</label>
-        <input type="text" id="receiverIdInput" placeholder="Digite o ID do usuário" required>
-        <button onclick="connectToChat()">Conectar</button>
-      </div>
-      <div id="usersList" class="users-list"></div>
-    </div>
+<div class="chat-container">
 
-    <!-- Seção do chat (inicialmente oculta) -->
-    <div id="chatSection" class="chat-section" style="display: none;">
-      <div class="chat-info">
-        <p>Conversando com: <strong id="receiverName">-</strong> (ID: <span id="receiverIdDisplay">-</span>)</p>
-        <button onclick="disconnectFromChat()">Trocar Conversa</button>
-      </div>
-      
-      <!-- DIV na qual vai conter a lista de mensagens -->
-      <div class="chat-box" id="messagesQueue"></div>
+    <!-- ================= HOME ================= -->
+    <div id="homeSection">
 
-      <form class="chat-form" id="InsertForm">
-        <input type="text" name="text" id="messageInput" placeholder="Digite sua mensagem..." required>
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
-  </div>
+        <header class="chat-header">
+            Bem-vindo
+        </header>
 
-  <script>
-    const API_URL = 'http://localhost:8000';
-    let ws = null;
-    let currentReceiverId = null;
-    let currentUserId = null;
-    let token = null;
+        <div class="receiver-section">
 
-    // Carrega token do localStorage
-    token = localStorage.getItem('token');
-    if (!token) {
-      alert('Token não encontrado. Faça login novamente.');
-      window.location.href = '/html/login.html';
-    }
+            <h3>Escolha uma opção</h3>
 
-    // Carrega lista de usuários ao iniciar
-    loadUsers();
+            <!-- Botão para Chat Global -->
+            <button onclick="window.location.href='/html/chat_global.html'">
+                Ir para Chat Global
+            </button>
 
-    // Função para carregar lista de usuários
-    async function loadUsers() {
-      try {
-        const response = await fetch(`${API_URL}/users`);
-        if (response.ok) {
-          const users = await response.json();
-          const usersListDiv = document.getElementById('usersList');
-          usersListDiv.innerHTML = '<h4>Usuários disponíveis:</h4>';
-          
-          users.forEach(user => {
-            const userDiv = document.createElement('div');
-            userDiv.className = 'user-item';
-            userDiv.innerHTML = `
-              <span><strong>${user.name}</strong></span>
-              <span>ID: ${user.id}</span>
-              <button onclick="selectReceiver('${user.id}', '${user.name}')">Conversar</button>
-            `;
-            usersListDiv.appendChild(userDiv);
-          });
-        }
-      } catch (error) {
-        console.error('Erro ao carregar usuários:', error);
-      }
-    }
+            <div class="divider-text">ou</div>
 
-    // Função para selecionar destinatário
-    function selectReceiver(userId, userName) {
-      document.getElementById('receiverIdInput').value = userId;
-      connectToChat();
-    }
+            <!-- Input para room_id -->
+            <div class="input-group">
+                <label for="roomInput">ID da Sala Privada:</label>
+                <input type="text" id="roomInput" placeholder="Digite o room_id">
+            </div>
 
-    // Função para conectar ao chat
-    async function connectToChat() {
-      const receiverId = document.getElementById('receiverIdInput').value.trim();
-      
-      if (!receiverId) {
-        alert('Por favor, digite o ID do destinatário');
-        return;
-      }
-
-      if (!token) {
-        alert('Token não encontrado. Faça login novamente.');
-        window.location.href = '/html/login.html';
-        return;
-      }
-
-      currentReceiverId = receiverId;
-      
-      // Obtém nome do destinatário
-      try {
-        const response = await fetch(`${API_URL}/users/${receiverId}`);
-        if (response.ok) {
-          const user = await response.json();
-          document.getElementById('receiverName').textContent = user.name;
-          document.getElementById('receiverIdDisplay').textContent = receiverId;
-        }
-      } catch (error) {
-        console.error('Erro ao buscar usuário:', error);
-      }
-
-      // Oculta seção de seleção e mostra chat
-      document.getElementById('selectReceiverSection').style.display = 'none';
-      document.getElementById('chatSection').style.display = 'block';
-
-      // Conecta ao WebSocket
-      connectWebSocket();
-      
-      // Carrega histórico
-      loadMessages();
-    }
-
-    // Função para desconectar do chat atual
-    function disconnectFromChat() {
-      if (ws) {
-        ws.close();
-        ws = null;
-      }
-      currentReceiverId = null;
-      document.getElementById('selectReceiverSection').style.display = 'block';
-      document.getElementById('chatSection').style.display = 'none';
-      document.getElementById('messagesQueue').innerHTML = '';
-    }
-
-    // Função para conectar ao WebSocket
-    function connectWebSocket() {
-      const wsUrl = API_URL.replace('http', 'ws') + '/ws/chat';
-      ws = new WebSocket(wsUrl);
-
-      ws.onopen = () => {
-        console.log('WebSocket conectado');
-        // Envia mensagem de autenticação
-        ws.send(JSON.stringify({
-          type: 'auth',
-          token: token
-        }));
-      };
-
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        console.log(data)
-        if (data.type === 'auth_success') {
-          console.log('Autenticação realizada com sucesso');
-          currentUserId = data.user_id;
-        } else if (data.type === 'message') {
-          // Recebeu uma mensagem
-          displayMessage(data);
-        } else if (data.type === 'error') {
-          alert('Erro: ' + data.message);
-          if (data.message.includes('Token')) {
-            window.location.href = '/html/login.html';
-          }
-        }
-      };
-
-      ws.onerror = (error) => {
-        console.error('Erro no WebSocket:', error);
-        alert('Erro na conexão WebSocket');
-      };
-
-      ws.onclose = () => {
-        console.log('WebSocket desconectado');
-      };
-    }
-
-    // Função para exibir mensagem na tela
-    function displayMessage(message) {
-      const messagesQueue = document.getElementById('messagesQueue');
-      const messageDiv = document.createElement('div');
-      messageDiv.className = 'message';
-      
-      const isOwnMessage = message.sender_id === currentUserId;
-      messageDiv.classList.add(isOwnMessage ? 'own-message' : 'other-message');
-      
-      const timestamp = new Date(message.timestamp).toLocaleString('pt-BR');
-      
-      messageDiv.innerHTML = `
-        <div class="message-info">
-          <span class="username">${isOwnMessage ? 'Você' : 'Outro usuário'}</span>
-          <span class="time">${timestamp}</span>
-          <div class="message-text">${escapeHtml(message.content)}</div>
+            <button id="enterPrivateBtn">Entrar no Chat Privado</button>
         </div>
-      `;
-      
-      messagesQueue.appendChild(messageDiv);
-      messagesQueue.scrollTop = messagesQueue.scrollHeight;
-    }
+    </div>
 
-    // Função para escapar HTML (prevenir XSS)
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
+    <!-- ================= CHAT PRIVADO ================= -->
+    <div id="privateChatSection" class="chat-section" style="display:none;">
 
-    // Função para enviar mensagem
-    const form = document.getElementById('InsertForm');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+        <header class="chat-header">
+            <span>Chat Privado</span>
+            <button class="back-btn" onclick="goBackHome()">Voltar</button>
+        </header>
 
-      const messageInput = document.getElementById('messageInput');
-      const content = messageInput.value.trim();
+        <div class="chat-info">
+            <p><strong>Sala:</strong> <span id="roomName">---</span></p>
+        </div>
 
-      if (!content) {
-        return;
-      }
+        <div class="chat-box" id="messagesBox"></div>
 
-      if (!ws || ws.readyState !== WebSocket.OPEN) {
-        alert('WebSocket não está conectado. Reconectando...');
-        connectWebSocket();
-        return;
-      }
+        <form class="chat-form" id="privateMessageForm">
+            <input type="text" id="privateMessageInput" placeholder="Digite sua mensagem..." required>
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
 
-      if (!currentReceiverId) {
-        alert('Selecione um destinatário primeiro');
-        return;
-      }
+</div>
 
-      // Envia mensagem via WebSocket
-      ws.send(JSON.stringify({
-        type: 'message',
-        receiver_id: currentReceiverId,
-        content: content
-      }));
+<script>
 
-      // Limpa o input
-      messageInput.value = '';
-    });
+    // --------------- FUNÇÃO PARA PEGAR O USUÁRIO LOGADO ---------------
+    async function loadUser() {
+        const userId = localStorage.getItem("user_id");
 
-    // Função para carregar histórico de mensagens
-    async function loadMessages() {
-      if (!currentReceiverId || !token) {
-        return;
-      }
-
-      try {
-        const response = await fetch(`${API_URL}/messages/history/${currentReceiverId}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (response.ok) {
-          const messages = await response.json();
-          const messagesQueue = document.getElementById('messagesQueue');
-          messagesQueue.innerHTML = '';
-
-          messages.forEach(msg => {
-            displayMessage(msg);
-          });
-        } else {
-          console.error('Erro ao carregar histórico');
+        if (!userId) {
+            alert("Usuário não autenticado!");
+            return null;
         }
-      } catch (error) {
-        console.error('Erro ao carregar mensagens:', error);
-      }
+
+        const res = await fetch(`http://localhost:8000/users/${userId}`);
+        const user = await res.json();
+        return user.name;
     }
 
-    // Função para desconectar e sair
-    function disconnect() {
-      if (ws) {
-        ws.close();
-      }
-      localStorage.removeItem('token');
-      localStorage.removeItem('user_id');
-      alert('✅ Desconectando....');
-      window.location.href = '/html/login.html';
-    }
 
-    // Enter key no input de destinatário
-    document.getElementById('receiverIdInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        connectToChat();
-      }
+    // --------------- NAVEGAR DE HOME PARA O CHAT PRIVADO ---------------
+    document.getElementById("enterPrivateBtn").addEventListener("click", async () => {
+        const roomId = document.getElementById("roomInput").value.trim();
+
+        if (roomId === "") {
+            alert("Digite um room_id!");
+            return;
+        }
+
+        const username = await loadUser();
+        if (!username) return;
+
+        // atualizar info
+        document.getElementById("roomName").textContent = roomId;
+
+        // mostrar tela do chat e ocultar home
+        document.getElementById("homeSection").style.display = "none";
+        document.getElementById("privateChatSection").style.display = "flex";
+
+        startPrivateChat(roomId, username);
     });
 
-    loadMessages();
-    setInterval(loadMessages, 5000);
-  </script>
+
+    // --------------- CONECTAR AO CHAT PRIVADO ---------------
+    function startPrivateChat(roomId, username) {
+
+        const socket = new WebSocket(`ws://localhost:8000/ws/private/${roomId}/${username}`);
+
+        const messagesBox = document.getElementById("messagesBox");
+        const form = document.getElementById("privateMessageForm");
+        const input = document.getElementById("privateMessageInput");
+
+        socket.onmessage = (event) => {
+            addMessage(event.data, username);
+        };
+
+        function addMessage(text, username) {
+            const div = document.createElement("div");
+
+            const isOwnMessage = text.includes(` ${username}:`);
+
+            div.classList.add("message", isOwnMessage ? "own-message" : "other-message");
+            div.innerText = text;
+
+            messagesBox.appendChild(div);
+            messagesBox.scrollTop = messagesBox.scrollHeight;
+        }
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const msg = input.value.trim();
+            if (msg !== "") {
+                socket.send(msg);
+                input.value = "";
+            }
+        });
+    }
+
+
+    // --------------- VOLTAR PARA HOME ---------------
+    function goBackHome() {
+        document.getElementById("privateChatSection").style.display = "none";
+        document.getElementById("homeSection").style.display = "block";
+        document.getElementById("messagesBox").innerHTML = "";
+    }
+
+</script>
+
 </body>
 </html>

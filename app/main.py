@@ -4,6 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 import os
 
+from app.infra.providers.rabbitmq_private import init_rabbit
+
 
 load_dotenv()
 
@@ -15,10 +17,21 @@ app = FastAPI(title="PixelChat")
 
 from app.controllers.global_chat_controller import GlobalRouter, start_global_chat
 from app.controllers.user_controller import UserRouter
-from app.controllers.chat_controller import ChatRouter
+from app.controllers.chat_controller import PrivateRouter
 
 app.include_router(UserRouter)
-app.include_router(ChatRouter)
+
+@app.on_event("startup")
+async def startup_event():
+    # inicializa rabbitMQ no startup (await)
+    try:
+        await init_rabbit()
+        print("RabbitMQ init ok")
+    except Exception as e:
+        print("Falha ao inicializar RabbitMQ:", e)
+
+app.include_router(PrivateRouter)
+
 
 @app.on_event("startup")
 async def startup():

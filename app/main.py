@@ -13,11 +13,18 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 app = FastAPI(title="PixelChat")
 
+from app.controllers.global_chat_controller import GlobalRouter, start_global_chat
 from app.controllers.user_controller import UserRouter
 from app.controllers.chat_controller import ChatRouter
 
 app.include_router(UserRouter)
 app.include_router(ChatRouter)
+
+@app.on_event("startup")
+async def startup():
+    await start_global_chat()
+    
+app.include_router(GlobalRouter)
 
 app.mount("/styles", StaticFiles(directory="app/views/styles"), name="styles") 
 

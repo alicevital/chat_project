@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Global</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+
+<div class="chat-container">
+
+    <header class="chat-header">
+        Chat Global
+    </header>
+
+    <div class="chat-box" id="messagesQueue"></div>
+
+    <form class="chat-form" id="InsertForm">
+        <input type="text" id="messageInput" placeholder="Digite sua mensagem..." required>
+        <button type="submit">Enviar</button>
+    </form>
+
+</div>
+
+<script>
+
+    async function loadUser() {
+        const userId = localStorage.getItem("user_id");
+
+        if (!userId) {
+            alert("Usuário não autenticado");
+            return null;
+        }
+
+        const res = await fetch(`http://localhost:8000/users/${userId}`);
+        const user = await res.json();
+
+        return user.name;
+    }
+
+
+    async function init() {
+        const username = await loadUser();
+
+        if (!username) {
+            alert("Erro ao carregar usuário");
+            return;
+        }
+
+        // WebSocket
+        const socket = new WebSocket(`ws://localhost:8000/ws/${username}`);
+        const messagesBox = document.getElementById("messagesQueue");
+        const form = document.getElementById("InsertForm");
+        const input = document.getElementById("messageInput");
+
+        socket.onmessage = (event) => {
+            const msg = event.data;
+            addMessage(msg);
+        };
+
+        function addMessage(text) {
+            const div = document.createElement("div");
+            div.classList.add("message");
+            div.innerText = text;
+            messagesBox.appendChild(div);
+            messagesBox.scrollTop = messagesBox.scrollHeight;
+        }
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const text = input.value.trim();
+            if (text !== "") {
+                socket.send(text);
+                input.value = "";
+            }
+        });
+    }
+
+    // inicia tudo
+    init();
+
+</script>
+
+</body>
+</html>

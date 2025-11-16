@@ -16,6 +16,7 @@
 
     <!-- Seção para selecionar destinatário -->
     <div id="selectReceiverSection" class="receiver-section">
+      <a href="chat_global.html">Conectar Chat Global</a>
       <h3>Selecione com quem conversar</h3>
       <div class="input-group">
         <label>ID do Usuário Destinatário</label>
@@ -282,6 +283,7 @@
         ws.close();
       }
       localStorage.removeItem('token');
+      localStorage.removeItem('user_id');
       alert('✅ Desconectando....');
       window.location.href = '/html/login.html';
     }

@@ -45,5 +45,5 @@ urllib3==2.2.1
 uvicorn==0.37.0
 zope.interface==8.0.1
 pika
-aio_pika
+aio-pika
 uvicorn[standard]

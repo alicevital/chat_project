@@ -52,6 +52,17 @@ async def private_chat(ws: WebSocket, room_id: str, username: str):
     # adiciona usuário à sala
     private_rooms[room_id].add(ws)
 
+
+    # Historico de Mensagens Privadas anteriores Persistidas no Mongo 
+    try:
+        cursor = private_collection.find({"room_id": room_id}).sort("_id", 1)
+
+        for msg in cursor:
+            formatted = f"[{msg['timestamp']}] {msg['sender']}: {msg['message']}"
+            await ws.send_text(formatted)
+    except Exception as e:
+        print("Erro carregando histórico:", e)
+
     # obtém canal RabbitMQ da sala
     channel = await get_channel(room_id)
     queue = await channel.declare_queue(room_id, durable=True)
@@ -91,7 +102,7 @@ async def private_chat(ws: WebSocket, room_id: str, username: str):
                 "room_id": room_id,
                 "sender": username,
                 "message": text,
-                "timestamp": time
+                "timestamp": datetime.datetime.utcnow()
             })
 
     except WebSocketDisconnect:

@@ -38,6 +38,15 @@ async def ws_endpoint(ws: WebSocket, username: str):
     await ws.accept()
     clients.add(ws)
 
+    # Historico de Mensagens publicas anteriores Persistidas no Mongo
+    try:
+        cursor = global_collection.find().sort("_id", 1)
+        for msg in cursor:
+            formatted = f"[{msg['timestamp']}] {msg['sender']}: {msg['message']}"
+            await ws.send_text(formatted)
+    except Exception as e:
+        print("Erro carregando histórico:", e)
+
     try:
         while True:
             text = await ws.receive_text()
@@ -57,7 +66,7 @@ async def ws_endpoint(ws: WebSocket, username: str):
             global_collection.insert_one({
                 "sender": username,
                 "message": text,
-                "timestamp": time
+                "timestamp": datetime.datetime.utcnow()
             })
 
     except WebSocketDisconnect:

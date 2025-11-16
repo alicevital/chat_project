@@ -3,14 +3,6 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-import os
-
-
-load_dotenv()
-
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 app = FastAPI(title="PixelChat")
 
@@ -34,4 +26,4 @@ app.mount("/html", StaticFiles(directory="app/views/html", html=True), name="htm
 
 @app.get("/html/cadastro.html") 
 def root(): 
-    return FileResponse("app/views/html/cadastro.html") 
+    return FileResponse("app/views/html/cadastro.html")

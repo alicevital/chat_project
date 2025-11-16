@@ -46,3 +46,4 @@ pika
 uvicorn[standard]
 websockets
 asyncio
+aio-pika

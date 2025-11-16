@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 
@@ -7,7 +7,7 @@ class MessageModel(BaseModel):
     remetente_id: str
     destinatario_id: Optional[str] = None
     conteudo: str
-    data: datetime.now
+    data: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
         arbitrary_types_allowed = True

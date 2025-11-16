@@ -4,55 +4,38 @@ from datetime import datetime
 from app.models.user_model import UserModel
 from app.models.message_model import MessageModel
 from app.database.database import get_database
-from app.websocket.manage import manager
+from app.websocket.manager import manager
+from app.messaging.publisher import publish_message
 
-ws_router = APIRouter(prefix="/ws", tags=["WebSocket"])
+ws_router = APIRouter()
 
-@ws_router.websocket("/connect/{socket_id}")
-async def websocket_endpoint(websocket: WebSocket, socket_id: str):
- 
-    await websocket.accept()
+@ws_router.websocket("/ws/chat/global")
+async def websocket_global_chat(websocket: WebSocket):
+    await manager.connect(websocket)
 
     try:
-        user_data = await websocket.receive_json()
-        user = UserModel(**user_data)
-
-        await manager.connect(socket_id, websocket, user)
-
         while True:
-            data = await websocket.receive_text()
-            print(f"Mensagem recebida do socket {socket_id}: {data}")
+            data = await websocket.receive_json()
+
+            message = MessageModel(**data)
+
+            publish_message(message.dict())
 
     except WebSocketDisconnect:
-        print(f"Socket {socket_id} desconectou")
-        await manager.disconnect(socket_id)
+        manager.disconnect(websocket)
 
-    except Exception as e:
-        print("Erro:", e)
-        await manager.disconnect(socket_id)
-        await websocket.close()
 
-@ws_router.websocket("/send")
-async def send_private_message(message: MessageModel):
-
+@ws_router.get("/chat/global/history")
+def get_global_chat_history():
     db = get_database()
-    
-    dest = await db.users.find_one({"_id": message.destinatario_id})
-    if not dest or "socket_id" not in dest:
-        return {"error": "Destinatário não encontrado ou offline"}
 
-    socket_dest = dest["socket_id"]
+    messages = list(
+        db.messages.find({"chat_id": "global"}).sort("data", 1)
+    )
 
-    await manager.send_private_message(message, socket_dest)
+    # Converter ObjectId para string
+    for m in messages:
+        m["_id"] = str(m["_id"])
 
-    await db.messages.insert_one(message.dict())
+    return messages
 
-    return {"status": "mensagem enviada"}
-
-
-@ws_router.websocket("/broadcast")
-async def broadcast_message(payload: dict):
-    
-    msg = payload.get("message", "")
-    await manager.broadcast(msg)
-    return {"status": "broadcast enviado"}

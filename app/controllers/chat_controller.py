@@ -3,15 +3,13 @@ import asyncio
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, HTTPException, Header
 from typing import Dict, List, Optional
 from jose import jwt, JWTError
-
 from app.database.database import get_database
 from app.repositories.message_repository import MessageRepository
 from app.repositories.user_repository import UserRepository
 from app.services.message_service import MessageService
 from app.schemas.message_schema import CreateMessage, ChatMessage, MessageResponse
 from app.infra.providers.rabbitmq_provider import publish_message
-from app.main import SECRET_KEY, ALGORITHM
-
+from app.core.config import SECRET_KEY, ALGORITHM
 
 ChatRouter = APIRouter(tags=['Chat WebSocket'])
 

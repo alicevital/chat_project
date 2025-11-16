@@ -15,3 +15,6 @@ class MessageModel(BaseModel):
         json_encoders = {
             datetime: lambda v: v.isoformat()
         }
+
+class MessagePrivate(BaseModel):
+    pass

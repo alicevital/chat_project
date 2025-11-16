@@ -5,7 +5,9 @@ from dotenv import load_dotenv
 from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 import os
 from app.infra.providers.rabbitmq_private import init_rabbit
-
+from app.controllers.global_chat_controller import GlobalRouter, start_global_chat
+from app.controllers.user_controller import UserRouter
+from app.controllers.chat_controller import PrivateRouter
 
 load_dotenv()
 
@@ -14,10 +16,6 @@ ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 app = FastAPI(title="PixelChat")
-
-from app.controllers.global_chat_controller import GlobalRouter, start_global_chat
-from app.controllers.user_controller import UserRouter
-from app.controllers.chat_controller import PrivateRouter
 
 app.include_router(UserRouter)
 
@@ -31,7 +29,6 @@ async def startup_event():
         print("Falha ao inicializar RabbitMQ:", e)
 
 app.include_router(PrivateRouter)
-
 
 @app.on_event("startup")
 async def startup():

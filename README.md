@@ -24,7 +24,7 @@ Plataforma de chat desenvolvida com **Python**, **FastAPI**, **WebSockets** e **
   - Timestamp
   - Conteúdo
 
-### Como rodar
+### - Como rodar
 Clone o repositório na sua máquina:
 ```bash
 git clone https://github.com/alicevital/chat_project.git
@@ -33,7 +33,7 @@ Rode o comando para criar as imagens e rodar os containers:
 ```bash
 docker compose up --build -d
 ```
-### Alguns blocos de código do projeto
+### - Alguns blocos de código do projeto
 
 Importa de um arquivo de configuração as variáveis de ambiente:
 ```python

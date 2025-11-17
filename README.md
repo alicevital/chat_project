@@ -37,3 +37,6 @@ Em desenvolvimento. Instruções de instalação, execução e deploy serão adi
 - Adicionar documentação da API
 - Adicionar docker-compose para subir RabbitMQ + aplicação
 - Implementar interface frontend
+
+```python
+from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES

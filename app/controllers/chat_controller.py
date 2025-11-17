@@ -22,7 +22,7 @@ async def get_channel(room_id: str):
         return rabbit_connections[room_id]
 
     conn = await aio_pika.connect_robust(
-        os.getenv("RABBITMQ_URI", "amqp://guest:guest@rabbitmq:5672")
+        os.getenv("RABBITMQ_URI")
     )
     channel = await conn.channel()
 

@@ -87,7 +87,7 @@ async def private_chat(ws: WebSocket, room_id: str, username: str):
     try:
         while True:
             text = await ws.receive_text()
-            time = datetime.datetime.now().strftime("%H:%M")
+            time = datetime.datetime.now(datetime.timezone.utc).strftime("%H:%M")
 
             final_message = f"[{time}] {username}: {text}"
 
@@ -102,7 +102,7 @@ async def private_chat(ws: WebSocket, room_id: str, username: str):
                 "room_id": room_id,
                 "sender": username,
                 "message": text,
-                "timestamp": datetime.datetime.utcnow()
+                "timestamp": time
             })
 
     except WebSocketDisconnect:

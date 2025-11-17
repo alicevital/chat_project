@@ -49,7 +49,7 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://root:root@localhost:27017")
+MONGO_URI = os.getenv("MONGO_URI")
 DATABASE_NAME = "chat_database"
 ```
 Rota de Login que verifica a autenticação:

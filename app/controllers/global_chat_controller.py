@@ -1,5 +1,5 @@
-import datetime
 import os
+import datetime
 import aio_pika
 import asyncio
 from app.database.database import get_database
@@ -50,7 +50,7 @@ async def ws_endpoint(ws: WebSocket, username: str):
     try:
         while True:
             text = await ws.receive_text()
-            time = datetime.datetime.now().strftime("%H:%M")
+            time = datetime.datetime.now(datetime.timezone.utc).strftime("%H:%M")
 
             final_message = f"[{time}] {username}: {text}"
 
@@ -66,7 +66,7 @@ async def ws_endpoint(ws: WebSocket, username: str):
             global_collection.insert_one({
                 "sender": username,
                 "message": text,
-                "timestamp": datetime.datetime.utcnow()
+                "timestamp": time
             })
 
     except WebSocketDisconnect:

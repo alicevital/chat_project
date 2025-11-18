@@ -1,0 +1,6 @@
+SECRET_KEY=get_secret_key_for_JWT
+ALGORITHM=get_algorithm_for_JWT
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+MONGO_URI=mongodb://root:root@mongo:27017/db_chat?authSource=admin 
+RABBITMQ_URI=amqp://guest:guest@rabbitmq:5672

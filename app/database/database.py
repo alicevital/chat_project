@@ -1,9 +1,7 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 from app.core.config import MONGO_URI, DATABASE_NAME
-import os
 
-# no computador: mongodb://root:root@localhost:27017 em produção: mongodb+srv://root:<db_password>@cluster0.i6ffdcs.mongodb.net/
 
 client = None
 

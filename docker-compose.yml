@@ -44,8 +44,8 @@ services:
     ports:
       - "8000:8000"
     environment:
-      MONGO_URI: mongodb+srv://chat_db_u:chatDBPASS@chatdb.psb6dew.mongodb.net/
-      RABBITMQ_URI: amqps://cizsiimt:BP2fQnQTuXfoHptyAYRWyCItkZGr6udZ@stingray.rmq.cloudamqp.com/cizsiimt
+      MONGO_URI: mongodb://root:root@mongo:27017/db_chat?authSource=admin
+      RABBITMQ_URI: amqp://guest:guest@rabbitmq:5672/
     depends_on:
       mongo:
         condition: service_healthy

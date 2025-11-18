@@ -2,6 +2,7 @@ import os
 import datetime
 import aio_pika
 import asyncio
+from app.core.config import RABBITMQ_URI
 from app.database.database import get_database
 from app.infra.providers.rabbitmq_global_consumer import start_global_consumer
 from fastapi import APIRouter, WebSocket
@@ -18,7 +19,7 @@ rabbit_channel = None
 
 async def connect_rabbit():
     global rabbit_conn, rabbit_channel
-    rabbit_conn = await aio_pika.connect_robust(os.getenv("RABBITMQ_URI", "amqp://guest:guest@localhost:5672"))
+    rabbit_conn = await aio_pika.connect_robust(RABBITMQ_URI)
     rabbit_channel = await rabbit_conn.channel()
 
 

@@ -3,6 +3,7 @@ from fastapi import WebSocket, WebSocketDisconnect, APIRouter
 import datetime
 import aio_pika
 import os
+from app.core.config import RABBITMQ_URI
 from app.database.database import get_database
 
 PrivateRouter = APIRouter()
@@ -21,9 +22,7 @@ async def get_channel(room_id: str):
     if room_id in rabbit_connections:
         return rabbit_connections[room_id]
 
-    conn = await aio_pika.connect_robust(
-        os.getenv("RABBITMQ_URI")
-    )
+    conn = await aio_pika.connect_robust(RABBITMQ_URI)
     channel = await conn.channel()
 
     # cria fila da sala

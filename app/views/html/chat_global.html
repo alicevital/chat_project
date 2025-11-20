@@ -33,7 +33,7 @@
             return null;
         }
 
-        const res = await fetch(`http://localhost:8000/users/${userId}`);
+        const res = await fetch(`https://chat-project-meem.onrender.com/users/${userId}`);
         const user = await res.json();
 
         return user.name;
@@ -49,7 +49,7 @@
         }
 
         // WebSocket
-        const socket = new WebSocket(`ws://localhost:8000/ws/${username}`);
+        const socket = new WebSocket(`ws://chat-project-meem.onrender.com/ws/${username}`);
         const messagesBox = document.getElementById("messagesQueue");
         const form = document.getElementById("InsertForm");
         const input = document.getElementById("messageInput");

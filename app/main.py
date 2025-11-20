@@ -41,6 +41,6 @@ app.mount("/styles", StaticFiles(directory="app/views/styles"), name="styles")
 app.mount("/html", StaticFiles(directory="app/views/html", html=True), name="html") 
 
 
-@app.get("/html/cadastro.html") 
+@app.get("/") 
 def root(): 
-    return FileResponse("app/views/html/cadastro.html")
+    return FileResponse("app/views/html/index.html")

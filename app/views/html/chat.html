@@ -71,7 +71,7 @@
             return null;
         }
 
-        const res = await fetch(`http://localhost:8000/users/${userId}`);
+        const res = await fetch(`https://chat-project-meem.onrender.com/users/${userId}`);
         const user = await res.json();
         return user.name;
     }
@@ -103,7 +103,7 @@
     // --------------- CONECTAR AO CHAT PRIVADO ---------------
     function startPrivateChat(roomId, username) {
 
-        const socket = new WebSocket(`ws://localhost:8000/ws/private/${roomId}/${username}`);
+        const socket = new WebSocket(`ws://chat-project-meem.onrender.com/ws/private/${roomId}/${username}`);
 
         const messagesBox = document.getElementById("messagesBox");
         const form = document.getElementById("privateMessageForm");

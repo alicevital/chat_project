@@ -86,6 +86,10 @@ async def private_chat(ws: WebSocket, room_id: str, username: str):
     try:
         while True:
             text = await ws.receive_text()
+            if len(text) > 150:
+                text = "..."
+                return "Payload too large"
+            
             time = datetime.datetime.now(datetime.timezone.utc).strftime("%H:%M")
 
             final_message = f"[{time}] {username}: {text}"

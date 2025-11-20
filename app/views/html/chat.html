@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Chat Privado</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
 
@@ -25,7 +25,7 @@
             <h3>Escolha uma opção</h3>
 
             <!-- Botão para Chat Global -->
-            <button onclick="window.location.href='/chat_global.html'">
+            <button onclick="window.location.href='/html/chat_global.html'">
                 Ir para Chat Global
             </button>
 
@@ -152,7 +152,7 @@
     function disconect() {
         localStorage.removeItem("token"); 
         localStorage.removeItem("user_id");
-        window.location.href = "/login.html";  
+        window.location.href = "/html/login.html";  
     }
 
 </script>

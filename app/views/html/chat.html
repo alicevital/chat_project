@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Chat Privado</title>
-    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 
@@ -16,13 +16,16 @@
         <header class="chat-header">
             Bem-vindo
         </header>
+        <button id="logoutBtn" onclick="disconect()" class="logout-btn">
+            Desconectar
+        </button>
 
         <div class="receiver-section">
 
             <h3>Escolha uma opção</h3>
 
             <!-- Botão para Chat Global -->
-            <button onclick="window.location.href='/html/chat_global.html'">
+            <button onclick="window.location.href='/chat_global.html'">
                 Ir para Chat Global
             </button>
 
@@ -103,13 +106,14 @@
     // --------------- CONECTAR AO CHAT PRIVADO ---------------
     function startPrivateChat(roomId, username) {
 
-        const socket = new WebSocket(`ws://chat-project-meem.onrender.com/ws/private/${roomId}/${username}`);
+        const socket = new WebSocket(`wss://chat-project-meem.onrender.com/ws/private/${roomId}/${username}`);
 
         const messagesBox = document.getElementById("messagesBox");
         const form = document.getElementById("privateMessageForm");
         const input = document.getElementById("privateMessageInput");
 
         socket.onmessage = (event) => {
+            event.preventDefault()
             addMessage(event.data, username);
         };
 
@@ -142,6 +146,13 @@
         document.getElementById("privateChatSection").style.display = "none";
         document.getElementById("homeSection").style.display = "block";
         document.getElementById("messagesBox").innerHTML = "";
+    }
+
+    // --------------- VOLTAR PARA LOGIN ---------------
+    function disconect() {
+        localStorage.removeItem("token"); 
+        localStorage.removeItem("user_id");
+        window.location.href = "/login.html";  
     }
 
 </script>

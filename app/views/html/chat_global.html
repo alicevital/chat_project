@@ -49,12 +49,13 @@
         }
 
         // WebSocket
-        const socket = new WebSocket(`ws://chat-project-meem.onrender.com/ws/${username}`);
+        const socket = new WebSocket(`wss://chat-project-meem.onrender.com/ws/${username}`);
         const messagesBox = document.getElementById("messagesQueue");
         const form = document.getElementById("InsertForm");
         const input = document.getElementById("messageInput");
 
         socket.onmessage = (event) => {
+            event.preventDefault()
             const msg = event.data;
             addMessage(msg);
         };
